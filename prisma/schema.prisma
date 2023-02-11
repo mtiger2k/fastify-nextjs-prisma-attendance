@@ -1,10 +1,13 @@
-datasource db {
-  url      = env("DATABASE_URL")
-  provider = "postgresql"
-}
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -13,7 +16,7 @@ model User {
   email     String   @unique
   name      String
   password  String
-  role      Role     @default(EMPLOYEE)
+  role      String
   attendance     Attendance[]
   AttendanceSheet AttendanceSheet[]
 }
@@ -40,9 +43,4 @@ model Attendance {
   userId  Int?
   attendance    AttendanceSheet?    @relation(fields: [attendanceSheetId], references: [id])
   attendanceSheetId Int?
-}
-
-enum Role {
-  EMPLOYEE
-  ADMIN
 }

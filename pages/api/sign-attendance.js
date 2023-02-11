@@ -1,14 +1,25 @@
-import { PrismaClient } from '@prisma/client'
-import { withIronSessionApiRoute } from "iron-session/next";
-import { parseBody } from '../../lib/parseBody';
-import { sessionCookie } from '../../lib/session';
+import {
+    PrismaClient
+} from '@prisma/client'
+import {
+    withIronSessionApiRoute
+} from "iron-session/next";
+import {
+    parseBody
+} from '../../lib/parseBody';
+import {
+    sessionCookie
+} from '../../lib/session';
 
-  
-export default withIronSessionApiRoute( async function handler(req, res) {
+
+export default withIronSessionApiRoute(async function handler(req, res) {
 
     const prisma = new PrismaClient()
 
-    const {attendanceSheetId, action} = parseBody(req.body)
+    const {
+        attendanceSheetId,
+        action
+    } = parseBody(req.body)
 
     const user = req.session.user
 
@@ -29,9 +40,12 @@ export default withIronSessionApiRoute( async function handler(req, res) {
                 signOut: false,
                 signOutTime: new Date()
             },
-        })   
+        })
 
-        return res.json({status: "success", data: attendance});
+        return res.send({
+            status: "success",
+            data: attendance
+        });
 
     } else if (action === "sign-out") {
         await prisma.attendance.updateMany({
@@ -40,14 +54,24 @@ export default withIronSessionApiRoute( async function handler(req, res) {
                 attendanceSheetId: attendanceSheetId
             },
             data: {
-              signOut: true,
-              signOutTime: new Date()
+                signOut: true,
+                signOutTime: new Date()
             },
         })
 
-        return res.json({status: "success", data: { ...attendance[0], signOut: true, signOutTime: new Date()}});
+        return res.send({
+            status: "success",
+            data: {
+                ...attendance[0],
+                signOut: true,
+                signOutTime: new Date()
+            }
+        });
     }
 
-    res.json({status: "success", data: attendance});
-    
+    res.send({
+        status: "success",
+        data: attendance
+    });
+
 }, sessionCookie())
