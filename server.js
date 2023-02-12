@@ -7,7 +7,7 @@ async function noOpParser(req, payload) {
 }
 
 fastify
-  .register(require('fastify-nextjs'))
+  .register(require('@fastify/nextjs'))
   .after(() => {
 
 
@@ -15,12 +15,16 @@ fastify
     fastify.addContentTypeParser('application/json', noOpParser);
 
     fastify.next('/*')
-    fastify.next('/api/*', { method: 'ALL' });
+    fastify.next('/api/*', {
+      method: 'ALL'
+    });
 
 
   })
 
-fastify.listen(3000, err => {
+fastify.listen({
+  port: 3000
+}, err => {
   if (err) throw err
   console.log('Server listening on http://localhost:3000')
 })
